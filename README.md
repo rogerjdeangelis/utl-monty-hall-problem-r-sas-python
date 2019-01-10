@@ -8,6 +8,10 @@ Monty Hall Problem
     opens another door, say No. 3, which has a goat.
     He then says to you, "Do you want to pick door No. 2?" Is it to your advantage to switch your choice?
 
+    see recent comments by Martin on end
+    Martin, Vincent (STATCAN/STATCAN)
+    vincent.martin@canada.ca
+
       Three Solutions ( 10,000,000 simulation - timings may not be fair - I just ran the provided code)
 
              Seconds
@@ -21,6 +25,13 @@ Monty Hall Problem
 
           3.  46.27  SAS  drop down to Python
                      https://rosettacode.org/wiki/Monty_Hall_problem#Python
+
+          4.   0.89  IML (hope it is ok to copy in your code? - I have not done this except if code in SAS-L)
+                      Rick Wiclin
+                      https://blogs.sas.com/content/iml/2015/04/01/monty-hall.html
+
+    github
+    https://github.com/rogerjdeangelis/utl-monty-hall-problem-r-sas-python
 
     80 differenent language solutions
     https://rosettacode.org/wiki/Monty_Hall_problem
@@ -194,4 +205,60 @@ Monty Hall Problem
           system cpu time     0.06 seconds
 
 
+
+
+          4.   0.89  IML
+                      Rick Wicklin
+                      https://blogs.sas.com/content/iml/2015/04/01/monty-hall.html
+
+
+    proc iml;
+    call randseed(54321);
+    NumSim = 10000000;                               /* number of simulated games */
+    car = randfun(NumSim, "Table", {1 1 1}/3);  /* unknown door hides car */
+    guess = j(NumSim, 1, 1);                    /* WLOG, guess door=1 */
+    show = choose(car=2, 3, 2);                 /* host shows a goat */
+    switch = choose(show=2, 3, 2);              /* the door you could switch to */
+
+    winIfStay = mean(guess=car);                /* (P(win | do not switch) */
+    winIfSwitch = mean(switch=car);             /* (P(win | switch) */
+    print winIfStay winIfSwitch;
+    run;quit;
+
+
+    *__  __            _   _
+    |  \/  | __ _ _ __| |_(_)_ __
+    | |\/| |/ _` | '__| __| | '_ \
+    | |  | | (_| | |  | |_| | | | |
+    |_|  |_|\__,_|_|   \__|_|_| |_|
+
+    ;
+
+    Martin, Vincent (STATCAN/STATCAN)
+    vincent.martin@canada.ca
+
+    Martin, Vincent (STATCAN) via listserv.uga.edu
+    1:58 PM (7 minutes ago)
+     to SAS-L
+
+    At first glance the outputs felt like they were very far from their
+    expectancy for a binomial(10M, 2/3). In Roger’s example, the second simulation
+    is about 88 standard errors from the expected value (some of which is due to the
+    unnecessary rounding in the print) and the Wald CI/normal approximation is
+    definitely appropriate for something like this so there has to be something wrong
+     in either the RNG generator or in the code for some inappropriate loss of
+    numeric precision. Basically the Monte Carlo simulation #2 would fail right
+    about any imaginably wide confidence level hypothesis test that the Bayesian theory is right…
+
+
+
+    I often have to try to twist family’s thinking about problem to which Bayes
+    theorem provides a simple solution that can’t seem to agree with. For Monty Hall, I prefer:
+
+
+
+    A prize is hidden behind one of three doors. Choose one of the three doors.
+    Now that this is done,  you may choose to retain your door or pick the other 2 doors
+    together as a package, winning if the prize is behind either door. (and then walk
+    through how this line of thinking is exactly identical to what the problem does).
 
